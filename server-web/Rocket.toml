@@ -1,0 +1,2 @@
+[global.databases]
+sqlite_rss = {url="./database.sqlite"}
