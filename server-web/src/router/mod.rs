@@ -1,4 +1,5 @@
-pub mod api;
+pub mod auth;
+pub mod rss;
 
 #[get("/")]
 pub fn hello() -> &'static str {

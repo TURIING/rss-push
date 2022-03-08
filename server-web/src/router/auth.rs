@@ -1,6 +1,6 @@
 
 use rocket::{
-    serde::{json::{Json, serde_json::json}},
+    serde::json::{Json, serde_json::json},
     response::status,
     http::Status
 };
@@ -16,6 +16,8 @@ use diesel::{
 };
 
 // register account
+// 200 success
+// 400 already register
 #[post("/register", format = "json", data = "<info>")]
 pub async fn register(info: Json<AccountInfo>, conn: DbConn) ->  ResType {
     let info = info.into_inner();
@@ -43,7 +45,11 @@ pub async fn register(info: Json<AccountInfo>, conn: DbConn) ->  ResType {
         }
     }).await
 }
-
+// login the account
+// 201 success
+// 401 passwd error
+// 402 already login
+// 403 unregistered
 #[post("/login", format = "json", data = "<info>")]
 pub async fn login(info: Json<AccountInfo>, conn: DbConn) -> ResType {
     let info = info.into_inner();
@@ -57,7 +63,7 @@ pub async fn login(info: Json<AccountInfo>, conn: DbConn) -> ResType {
                 Err(e) => match e {
                     Error::NotFound => status::Custom(
                         Status::Ok,
-                        json!(ResMsg{ status: 400, msg: String::from("unregistered")})
+                        json!(ResMsg{ status: 403, msg: String::from("unregistered")})
                     ),
                     _ => status::Custom(
                         Status::InternalServerError,

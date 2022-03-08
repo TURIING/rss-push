@@ -1,9 +1,9 @@
 import * as React from "react";
 import "../css/login.css";
 import { LoginInfoContext } from "../context";
-
+import { SERVER_HOST } from "../variable";
+import axios from 'axios';
 import { Modal, Button, Form } from '@douyinfe/semi-ui';
-import { IconVigoLogo, IconSemiLogo } from '@douyinfe/semi-icons';
 
 export class Login extends React.Component {
 
@@ -11,16 +11,65 @@ export class Login extends React.Component {
 
     constructor(props, context) {
         super(props, context);
-        this.state = {page: true};
+        this.state = {page: true, visible: true};
 
     }
 
     // control to show login or register page
     changePage = () => {
-        console.log("change");
         this.setState({
             page: !this.state.page
         })
+    }
+
+    // close the modal
+    closeModal = () => {
+        this.setState({
+            visible: false
+        })
+    }
+
+    // register
+    register = () => {
+        
+        const url = SERVER_HOST + "api/register";
+        const formState = this.formApi.getFormState()['values'];
+        let data = {
+            username: formState['username'],
+            passwd: formState['passwd']
+        }
+        axios({
+            method: 'post',
+            url: url,
+            data: JSON.stringify(data),
+            headers: {'Content-Type': 'application/json'}
+        }).then(d => console.log(d.data))        
+    }
+
+    // login
+    login = () => {
+        const url = SERVER_HOST + "api/login";
+        const formState = this.formApi.getFormState()['values'];
+        let data = {
+            username: formState['username'],
+            passwd: formState['passwd']
+        }
+        axios({
+            method: 'post',
+            url: url,
+            data: JSON.stringify(data),
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => {
+            const code = response.data['status'];
+            console.log(code);
+            if (code == 201) {
+                this.closeModal();
+            }
+        })     
+    }
+
+    getFormApi = (formApi) => {
+        this.formApi = formApi;
     }
     
     render() {
@@ -112,22 +161,26 @@ export class Login extends React.Component {
         let page;
         if (this.state.page) {
             page = (
-                <Form>
+                <Form getFormApi={this.getFormApi}>
+                    
                     <p style={style.text}>欢迎使用RSS-PUSH</p>
-                    <Input 
+                    <Input
+                        field="username"
                         placeholder="请输入账号"
                         style={style.inputAccount}
                         noLabel={true}
                     />
                     <Input
+                        field="passwd"
                         placeholder="请输入密码"
                         type="password"
                         style={style.inputPasswd}
+                        noLabel={true}
                     />
                     <Button
                         type="primary" 
                         theme="solid" 
-                        onClick={this.changePage} 
+                        onClick={this.login} 
                         style={style.buttonLogin}>
                         登录
                     </Button>
@@ -141,24 +194,29 @@ export class Login extends React.Component {
                 <Form>
                     <p style={style.text}>欢迎使用RSS-PUSH</p>
                     <Input 
+                        field="username"
                         placeholder="请输入账号"
                         style={style.inputAccount}
                         noLabel={true}
                     />
                     <Input
+                        field="passwd"
                         placeholder="请输入密码"
                         type="password"
                         style={style.inputRegPasswd}
+                        noLabel={true}
                     />
                     <Input
+                        field="passwd_again"
                         placeholder="请再次输入密码"
                         type="password"
                         style={style.inputRegPasswdAgain}
+                        noLabel={true}
                     />
                     <Button
                         type="primary" 
                         theme="solid" 
-                        onClick={this.changePage} 
+                        onClick={this.register} 
                         style={style.buttonRegister}>
                         注册
                     </Button>
@@ -174,9 +232,8 @@ export class Login extends React.Component {
                 
                 <Modal
                     header={null}
-                    visible={true}
+                    visible={this.state.visible}
                     onOk={this.changePage}
-                    onCancel={this.handleCancel}
                     footer={page}
                     maskClosable={false}
                     style={style.modal}
