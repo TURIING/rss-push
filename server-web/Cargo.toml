@@ -11,7 +11,9 @@ diesel = "1.4"
 rocket_cors = "0.6.0-alpha1" 
 reqwest = "0.11.9"
 rss = "2.0.0"
-
+uuid = {version = "0.8.2", features = ["v4", "v3"]}
+thiserror = "1.0.30"
+anyhow = "1.0.56"
 
 
 

@@ -7,8 +7,8 @@ function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 750,
-    titleBarStyle: 'hidden',
-    trafficLightPosition: { x: 20, y: 15 },
+    //titleBarStyle: 'hidden',
+    //trafficLightPosition: { x: 20, y: 15 },
     show: false,
     resizable: false,
     webPreferences: {

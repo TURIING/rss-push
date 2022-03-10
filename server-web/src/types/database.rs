@@ -1,8 +1,16 @@
 table! {
-    User (id) {
+    user (id) {
         id -> Nullable<Integer>,
         username -> Text,
         passwd -> Text,
+    }
+}
+
+table! {
+    crates (crates_id) {
+        crates_id -> Text,
+        crates_type -> Text,
+        info -> Text,
     }
 }
 
@@ -14,7 +22,18 @@ table! {
     }
 }
 
+table! {
+    task (crates_id) {
+        crates_id -> Text,
+        task_type -> Text,
+        username -> Text,
+        params -> Text,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
-    User,
+    user,
+    crates,
     login_state,
+    task,
 );

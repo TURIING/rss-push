@@ -1,24 +1,24 @@
 mod router;
 mod types;
+mod utility;
+mod error;
 
 #[macro_use]
 extern crate rocket;
 #[macro_use]
 extern crate diesel;
 
+use rocket::http::Method::{Get, Post};
+use rocket_cors::AllowedOrigins;
 use rocket_sync_db_pools::database;
 use router::{
     auth::{login, register},
-    rss::rss_info,
     hello,
+    rss::info,
 };
-use rocket_cors::{AllowedOrigins};
-use rocket::http::Method::{Post, Get};
 
 #[database("sqlite_rss")]
 pub struct DbConn(diesel::SqliteConnection);
-
-
 
 #[launch]
 fn rocket() -> _ {
@@ -26,12 +26,14 @@ fn rocket() -> _ {
         allowed_origins: AllowedOrigins::All,
         allowed_methods: vec![Post, Get].into_iter().map(From::from).collect(),
         ..Default::default()
-    }.to_cors().unwrap();
+    }
+    .to_cors()
+    .unwrap();
 
     rocket::build()
         .mount("/", routes![hello])
         .mount("/api/auth", routes![login, register])
-        .mount("/api/rss", routes![rss_info])
+        .mount("/api/rss", routes![info])
         .attach(DbConn::fairing())
         .attach(cors)
 }
