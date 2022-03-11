@@ -16,7 +16,7 @@ pub struct SubscribeInfo {
 }
 
 
-#[derive(Insertable)]
+#[derive(Insertable, AsChangeset)]
 #[table_name = "crates"]
 pub struct CratesQuery {
     crates_id: String,
@@ -25,7 +25,7 @@ pub struct CratesQuery {
 }
 
 
-#[derive(Insertable)]
+#[derive(Insertable, AsChangeset)]
 #[table_name = "task"]
 pub struct TaskQuery {
     crates_id: String,

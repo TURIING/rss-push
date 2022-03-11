@@ -1,5 +1,9 @@
 use thiserror::Error;
-use rocket::{response::{ Responder, Response}, serde::json::serde_json::json};
+use rocket::{
+    response::{ self, Responder, Response}, 
+    request::Request,
+    serde::json::serde_json::json
+};
 use self::AuthErrorKind::*;
 use crate::types::ResMsg;
 use std::option::Option::None;

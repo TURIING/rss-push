@@ -3,7 +3,8 @@
 use crate::{
     types::{
         database::{ crates, task, login_state},
-        rss::{ RssInfo, SubscribeInfo, CratesQuery, TaskQuery }
+        rss::{ RssInfo, SubscribeInfo, CratesQuery, TaskQuery },
+        ResMsg
     },
     utility::get_username_by_session,
     DbConn,
@@ -38,7 +39,7 @@ pub async fn info(url: Form<Strict<String>>) -> Value {
 // subscribe rss feed
 #[post("/subscribe", data = "<info>")]
 pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value, Error> {
-    let (url, session_data) = info.into_inner();
+    let { url, session_data } = info.into_inner();
     let url_uuid = Uuid::new_v3(&Uuid::NAMESPACE_URL, url).to_string();
     
     conn.run(move |con| {
@@ -58,18 +59,19 @@ pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value,
         }
         // Join the task queue
         let username = get_username_by_session(session_data, con)
-            .inspect_err(|e| return e)
-            .into_ok();
+            .map_err(|e| return e);
+
         let task_info = TaskQuery {
             crates_id: String::from(url_uuid),
             task_type: String::from("rss"),
-
+            username,
+            params: String::new()
         };
-        diesel::insert_into(task::table).values()
+        diesel::insert_into(task::table).values(task_info).execute(con)?;
+        Ok(json!(ResMsg{ status: 202, msg: String::from("subscribe success"), ..Default::default()}))
+    }).await;
 
-    });
-
-    json!(())
+    
 }
 
 
