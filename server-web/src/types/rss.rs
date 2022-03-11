@@ -1,4 +1,4 @@
-use rocket::serde::{Deserialize, Serialize, de::value::StrDeserializer};
+use rocket::serde::{Deserialize, Serialize};
 use crate::types::database::{ task, crates };
 
 #[derive(Serialize, Deserialize)]
@@ -19,18 +19,18 @@ pub struct SubscribeInfo {
 #[derive(Insertable, AsChangeset)]
 #[table_name = "crates"]
 pub struct CratesQuery {
-    crates_id: String,
-    crates_type: String,
-    info: String
+    pub crates_id: String,
+    pub crates_type: String,
+    pub info: String
 }
 
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "task"]
 pub struct TaskQuery {
-    crates_id: String,
-    task_type: String,
-    username: String,
-    params: String
+    pub crates_id: String,
+    pub task_type: String,
+    pub username: String,
+    pub params: String
 
 }

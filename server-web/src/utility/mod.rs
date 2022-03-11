@@ -1,12 +1,9 @@
-use crate::{
-    DbConn,
-    types::database::login_state
-};
+use crate::types::database::login_state;
 use crate::error::{ Error, AuthErrorKind::UserNotExist};
 
 use anyhow::Result;
 use diesel::SqliteConnection;
-use diesel::{QueryDsl, RunQueryDsl, result::Error::NotFound};
+use diesel::{QueryDsl, RunQueryDsl, result::Error::NotFound, prelude::*};
 
 pub fn get_username_by_session(session_data: String, con: &mut SqliteConnection) -> Result<String, Error> {
 

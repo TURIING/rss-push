@@ -2,7 +2,7 @@
 
 use crate::{
     types::{
-        database::{ crates, task, login_state},
+        database::{ crates, task},
         rss::{ RssInfo, SubscribeInfo, CratesQuery, TaskQuery },
         ResMsg
     },
@@ -10,14 +10,14 @@ use crate::{
     DbConn,
     error::Error
 };
-use diesel::{QueryDsl, RunQueryDsl};
+use diesel::{QueryDsl, RunQueryDsl, prelude::*, result::Error::NotFound};
 use rocket::{
     form::{Form, Strict},
     serde::json::{serde_json::json, Value, Json},
 };
 use rss::Channel;
 use uuid::Uuid;
-
+//afb79651-4dcd-4400-903c-5b9fa1efd019
 
 
 // return rss info
@@ -39,27 +39,35 @@ pub async fn info(url: Form<Strict<String>>) -> Value {
 // subscribe rss feed
 #[post("/subscribe", data = "<info>")]
 pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value, Error> {
-    let { url, session_data } = info.into_inner();
-    let url_uuid = Uuid::new_v3(&Uuid::NAMESPACE_URL, url).to_string();
+
+    let SubscribeInfo{ url, session_data } = info.into_inner();
+    let url_uuid = Uuid::new_v3(&Uuid::NAMESPACE_URL, url.as_bytes()).to_string();
     
     conn.run(move |con| {
-        // Check whether this record exists in the Crates table
-        let crate_query = crates::table
-            .filter(crates::crates_id.eq(url_uuid.clone()))
-            .execute(con);
+        // verify session_data
+        let username = get_username_by_session(session_data, con)?;
 
-        if let Err(e) = crate_query {
-            // Create a crate record
-            let crate_info = CratesQuery {
-                crates_id: url_uuid.clone(),
-                crates_type: String::from("rss"),
-                info: String::new()
-            };
-            diesel::insert_into(crates::table).values(crate_info).execute(con).unwrap();
-        }
+        // Check whether this record exists in the Crates table
+        crates::table
+            .filter(crates::crates_id.eq(url_uuid.clone()))
+            .select(crates::crates_id)
+            .first::<String>(con)
+            .or_else(|e| {
+                match e {
+                    NotFound => {
+                        let crate_info = CratesQuery {
+                            crates_id: url_uuid.clone(),
+                            crates_type: String::from("rss"),
+                            info: String::new()
+                        };
+                        diesel::insert_into(crates::table).values(crate_info).execute(con)?;
+                        Ok(String::new())
+                    },
+                    _ => return Err(e),
+                }
+            })?;
+
         // Join the task queue
-        let username = get_username_by_session(session_data, con)
-            .map_err(|e| return e);
 
         let task_info = TaskQuery {
             crates_id: String::from(url_uuid),
@@ -68,8 +76,10 @@ pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value,
             params: String::new()
         };
         diesel::insert_into(task::table).values(task_info).execute(con)?;
+
         Ok(json!(ResMsg{ status: 202, msg: String::from("subscribe success"), ..Default::default()}))
-    }).await;
+
+    }).await
 
     
 }

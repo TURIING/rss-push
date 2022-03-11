@@ -14,7 +14,7 @@ use rocket_sync_db_pools::database;
 use router::{
     auth::{login, register},
     hello,
-    rss::info,
+    rss::{ info, subscribe}
 };
 
 #[database("sqlite_rss")]
@@ -33,7 +33,7 @@ fn rocket() -> _ {
     rocket::build()
         .mount("/", routes![hello])
         .mount("/api/auth", routes![login, register])
-        .mount("/api/rss", routes![info])
+        .mount("/api/rss", routes![info, subscribe])
         .attach(DbConn::fairing())
         .attach(cors)
 }

@@ -6,7 +6,11 @@ use rocket::{
 };
 use self::AuthErrorKind::*;
 use crate::types::ResMsg;
-use std::option::Option::None;
+use std::{
+    option::Option::None,
+    io::Cursor
+
+};
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -33,7 +37,7 @@ impl<'r, 'o: 'r> Responder<'r, 'o> for Error {
         };
 
         Response::build()
-            .sized_body(None, json!(msg))
+            .sized_body(None, Cursor::new(json!(msg).to_string()))
             .ok()
     }
 }

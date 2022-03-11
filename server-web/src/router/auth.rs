@@ -1,7 +1,7 @@
 use crate::types::database::{login_state, user};
 use crate::{
     types::{
-        auth::{AccountInfo, LoginStateInfo, UserQuery},
+        auth::{AccountInfo, LoginStateInfo},
         ResMsg, ResType,
     },
     DbConn,
