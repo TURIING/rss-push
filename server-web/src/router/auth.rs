@@ -5,6 +5,7 @@ use crate::{
         ResMsg, ResType,
     },
     DbConn,
+    error::{ RssError, AuthErrorKind::{ UserNotExist, AlreadyLogged, PasswdMistake}}
 };
 use diesel::{
     prelude::*,
@@ -12,9 +13,9 @@ use diesel::{
     RunQueryDsl,
 };
 use rocket::{
-    http::Status,
+    http::{ Status, CookieJar, Cookie},
     response::status,
-    serde::json::{serde_json::json, Json},
+    serde::json::{serde_json::json, Json, Value},
 };
 use uuid::Uuid;
 
@@ -70,7 +71,7 @@ pub async fn register(info: Json<AccountInfo>, conn: DbConn) -> ResType {
 // 402 already login
 // 403 unregistered
 #[post("/login", format = "json", data = "<info>")]
-pub async fn login(info: Json<AccountInfo>, conn: DbConn) -> ResType {
+pub async fn login(info: Json<AccountInfo>, conn: DbConn, cookie: &CookieJar<'_>) -> Result<Value, RssError> {
     let info = info.into_inner();
 
     conn.run(move |con| {
@@ -81,62 +82,32 @@ pub async fn login(info: Json<AccountInfo>, conn: DbConn) -> ResType {
 
         match passwd_query_res {
             Err(e) => match e {
-                Error::NotFound => {
-                    status::Custom(
-                        Status::Ok,
-                        json!(ResMsg {
-                            status: 403,
-                            msg: String::from("unregistered"),
-                            ..Default::default()
-                        }),
-                    )
-                },
-                _ => status::Custom(Status::InternalServerError, json!(())),
+                Error::NotFound => { return Err(RssError::AuthError(UserNotExist)) },
+                _ => return Err(e),
             },
             Ok(p) => {
                 if p == info.passwd.clone() {
                     // passwd correct
-                    let session_data = Uuid::new_v4().to_string();
+                    let token = Uuid::new_v4().to_string();
                     let state_info = LoginStateInfo {
                         username: info.username,
-                        session_data: session_data.clone(),
+                        session_data: token.clone(),
                     };
                     
-                    let insert_query_res = diesel::insert_into(login_state::table).values(state_info).execute(con);
-                    match insert_query_res {
+                    let insert_query = diesel::insert_into(login_state::table).values(state_info).execute(con);
+                    match insert_query {
                         Ok(_) => {
-                            
-                            status::Custom(
-                                Status::Ok,
-                                json!(ResMsg {
-                                    status: 201,
-                                    msg: String::from("success"),
-                                    session_data
-                                }),
-                            )
+                            cookie.add(Cookie::new("token", token));
+                            json!(ResMsg { status: 201, msg: String::from("success"), ..Default::default()})
                         },
                         Err(e) => match e {
-                            Error::DatabaseError(UniqueViolation, _) => status::Custom(
-                                Status::Ok,
-                                json!(ResMsg {
-                                    status: 402,
-                                    msg: String::from("You have logged in to the account"),
-                                    ..Default::default()
-                                }),
-                            ),
-                            _ => status::Custom(Status::InternalServerError, json!(())),
+                            Error::DatabaseError(UniqueViolation, _) => return Err(RssError::AuthError(AlreadyLogged)),
+                            _ => return Err(e),
                         },
                     }
                 } else {
                     // passwd error
-                    status::Custom(
-                        Status::Ok,
-                        json!(ResMsg {
-                            status: 401,
-                            msg: String::from("fail"),
-                            ..Default::default()
-                        }),
-                    )
+                    return Err(RssError::AuthError(PasswdMistake))
                 }
             }
         }

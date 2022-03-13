@@ -13,7 +13,7 @@ use std::{
 };
 
 #[derive(Debug, Error)]
-pub enum Error {
+pub enum RssError {
     #[error("Authentication error")]
     AuthError(AuthErrorKind),
     #[error("Unknown error")]
@@ -21,19 +21,20 @@ pub enum Error {
     #[error("Database error")]
     DatabaseError(#[from] diesel::result::Error)
 }
-impl<'r, 'o: 'r> Responder<'r, 'o> for Error {
+impl<'r, 'o: 'r> Responder<'r, 'o> for RssError {
     fn respond_to(self, _: &'r Request<'_>) -> response::Result<'o> {
         
 
         let msg = match self {
-            Error::AuthError(kind) => {
+            RssError::AuthError(kind) => {
                 match kind {
                     UserNotExist => ResMsg{ status: 404, msg: kind.to_string(), ..Default::default()},
-                    PasswdMistake => ResMsg { status: 401, msg: kind.to_string(), ..Default::default()}
+                    PasswdMistake => ResMsg { status: 401, msg: kind.to_string(), ..Default::default()},
+                    AlreadyLogged => ResMsg { status: 402, msg: kind.to_string(), ..Default::default()}
                 }
             },
-            Error::UnknownError(e) => ResMsg { status: 500, msg: e.to_string(), ..Default::default()},
-            Error::DatabaseError(e) => ResMsg { status: 501, msg: e.to_string(), ..Default::default()},
+            RssError::UnknownError(e) => ResMsg { status: 500, msg: e.to_string(), ..Default::default()},
+            RssError::DatabaseError(e) => ResMsg { status: 501, msg: e.to_string(), ..Default::default()},
         };
 
         Response::build()
@@ -48,4 +49,6 @@ pub enum AuthErrorKind {
     UserNotExist,
     #[error("The account or password is incorrect")]
     PasswdMistake,
+    #[error("You have logged in to the account")]
+    AlreadyLogged,
 }

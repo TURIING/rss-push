@@ -5,10 +5,10 @@ const path = require('path')
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 750,
-    //titleBarStyle: 'hidden',
-    //trafficLightPosition: { x: 20, y: 15 },
+    width: 1000,
+    height: 650,
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 20, y: 15 },
     show: false,
     resizable: false,
     webPreferences: {

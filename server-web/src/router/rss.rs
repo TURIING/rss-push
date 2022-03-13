@@ -8,7 +8,7 @@ use crate::{
     },
     utility::get_username_by_session,
     DbConn,
-    error::Error
+    error::RssError
 };
 use diesel::{QueryDsl, RunQueryDsl, prelude::*, result::Error::NotFound};
 use rocket::{
@@ -38,7 +38,7 @@ pub async fn info(url: Form<Strict<String>>) -> Value {
 
 // subscribe rss feed
 #[post("/subscribe", data = "<info>")]
-pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value, Error> {
+pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value, RssError> {
 
     let SubscribeInfo{ url, session_data } = info.into_inner();
     let url_uuid = Uuid::new_v3(&Uuid::NAMESPACE_URL, url.as_bytes()).to_string();

@@ -1,11 +1,11 @@
 use crate::types::database::login_state;
-use crate::error::{ Error, AuthErrorKind::UserNotExist};
+use crate::error::{ RssError, AuthErrorKind::UserNotExist};
 
 use anyhow::Result;
 use diesel::SqliteConnection;
 use diesel::{QueryDsl, RunQueryDsl, result::Error::NotFound, prelude::*};
 
-pub fn get_username_by_session(session_data: String, con: &mut SqliteConnection) -> Result<String, Error> {
+pub fn get_username_by_session(session_data: String, con: &mut SqliteConnection) -> Result<String, RssError> {
 
     
     let username_query = login_state::table
@@ -18,8 +18,8 @@ pub fn get_username_by_session(session_data: String, con: &mut SqliteConnection)
         },
         Err(e) => {
             match e {
-                NotFound => Err(Error::AuthError(UserNotExist)),
-                _ => Err(Error::UnknownError(e.to_string()))
+                NotFound => Err(RssError::AuthError(UserNotExist)),
+                _ => Err(RssError::UnknownError(e.to_string()))
             }
         }
     }

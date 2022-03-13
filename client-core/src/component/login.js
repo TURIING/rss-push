@@ -47,8 +47,8 @@ export class Login extends React.Component {
     }
 
     // login
-    login = () => {
-        const url = SERVER_HOST + "api/login";
+    login = (setLoginInfo) => {
+        const url = SERVER_HOST + "api/auth/login";
         const formState = this.formApi.getFormState()['values'];
         let data = {
             username: formState['username'],
@@ -64,6 +64,8 @@ export class Login extends React.Component {
             console.log(code);
             if (code == 201) {
                 this.closeModal();
+                let info = { is_login: true, username: data.username};
+                setLoginInfo(info);
             }
         })     
     }
@@ -177,13 +179,17 @@ export class Login extends React.Component {
                         style={style.inputPasswd}
                         noLabel={true}
                     />
-                    <Button
-                        type="primary" 
-                        theme="solid" 
-                        onClick={this.login} 
-                        style={style.buttonLogin}>
-                        登录
-                    </Button>
+                    <LoginInfoContext.Consumer>
+                        {({login_info, setLoginInfo}) => (
+                            <Button
+                                type="primary" 
+                                theme="solid" 
+                                onClick={() => {this.login(setLoginInfo)}} 
+                                style={style.buttonLogin}>
+                                登录
+                            </Button>
+                        )}
+                    </LoginInfoContext.Consumer>                    
                     <Button type="primary" theme="borderless" onClick={this.changePage} style={style.buttonChange}>
                         没有账号？
                     </Button>
@@ -213,6 +219,7 @@ export class Login extends React.Component {
                         style={style.inputRegPasswdAgain}
                         noLabel={true}
                     />
+
                     <Button
                         type="primary" 
                         theme="solid" 
@@ -229,6 +236,15 @@ export class Login extends React.Component {
         
         return (
             <>
+                {/* <ThemeContext.Consumer>
+                {({theme, toggleTheme}) => (
+                    <button
+                    onClick={toggleTheme}
+                    style={{backgroundColor: theme.background}}>
+                    Toggle Theme
+                    </button>
+                )}
+                </ThemeContext.Consumer>  */}
                 
                 <Modal
                     header={null}

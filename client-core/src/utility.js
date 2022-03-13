@@ -16,6 +16,11 @@ export class Config{
     static readAll() {
         return fs.readFileSync(CFG_FILE, 'utf8');
     }
+
+    // write config content
+    static writeAll(content) {
+        fs.writeFileSync(CFG_FILE, JSON.stringify(content));
+    }
 }
 
 // default config context

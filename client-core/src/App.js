@@ -45,6 +45,12 @@ export default class App extends React.Component {
 				setLoginInfo: this.setLoginInfo
 			}
 		})
+
+		let content = {
+			is_login: info.is_login,
+			username: info.username,
+		};
+		Config.writeAll(content);
 	}
 }
 

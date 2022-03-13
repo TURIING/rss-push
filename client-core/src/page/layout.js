@@ -10,7 +10,7 @@ export function Layout() {
     return(
         <div>
             <SideBar />
-            {/* { !is_login && <Login />} */}
+            { !is_login && <Login />}
         </div>
     );
 }
