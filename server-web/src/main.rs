@@ -2,6 +2,7 @@ mod router;
 mod types;
 mod utility;
 mod error;
+mod database;
 
 #[macro_use]
 extern crate rocket;

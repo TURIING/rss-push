@@ -27,5 +27,5 @@ export class Config{
 const cfg_ctx_default = {
     is_login: false,
     username: null,
-
+    token: null
 }

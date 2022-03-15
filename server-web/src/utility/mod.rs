@@ -5,11 +5,11 @@ use anyhow::Result;
 use diesel::SqliteConnection;
 use diesel::{QueryDsl, RunQueryDsl, result::Error::NotFound, prelude::*};
 
-pub fn get_username_by_session(session_data: String, con: &mut SqliteConnection) -> Result<String, RssError> {
+pub fn get_username_by_session(token: String, con: &mut SqliteConnection) -> Result<String, RssError> {
 
     
     let username_query = login_state::table
-        .filter(login_state::session_data.eq(session_data))
+        .filter(login_state::token.eq(token))
         .select(login_state::username)
         .first::<String>(con);
     match username_query {

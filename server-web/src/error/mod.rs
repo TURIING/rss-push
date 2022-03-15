@@ -30,7 +30,9 @@ impl<'r, 'o: 'r> Responder<'r, 'o> for RssError {
                 match kind {
                     UserNotExist => ResMsg{ status: 404, msg: kind.to_string(), ..Default::default()},
                     PasswdMistake => ResMsg { status: 401, msg: kind.to_string(), ..Default::default()},
-                    AlreadyLogged => ResMsg { status: 402, msg: kind.to_string(), ..Default::default()}
+                    AlreadyLogged => ResMsg { status: 402, msg: kind.to_string(), ..Default::default()},
+                    AlreadyRegister => ResMsg { status: 400, msg: kind.to_string(), ..Default::default()},
+                    InvalidToken => ResMsg { status: 403, msg: kind.to_string(), ..Default::default()}
                 }
             },
             RssError::UnknownError(e) => ResMsg { status: 500, msg: e.to_string(), ..Default::default()},
@@ -51,4 +53,8 @@ pub enum AuthErrorKind {
     PasswdMistake,
     #[error("You have logged in to the account")]
     AlreadyLogged,
+    #[error("This account has been registered")]
+    AlreadyRegister,
+    #[error("Invalid token")]
+    InvalidToken,
 }

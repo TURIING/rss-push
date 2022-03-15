@@ -61,10 +61,10 @@ export class Login extends React.Component {
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
             const code = response.data['status'];
-            console.log(code);
+            const token = response.data['token'];
             if (code == 201) {
                 this.closeModal();
-                let info = { is_login: true, username: data.username};
+                let info = { is_login: true, username: data.username, token: token};
                 setLoginInfo(info);
             }
         })     

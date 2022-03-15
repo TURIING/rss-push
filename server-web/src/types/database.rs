@@ -10,7 +10,7 @@ table! {
     login_state (id) {
         id -> Nullable<Integer>,
         username -> Text,
-        session_data -> Text,
+        token -> Text,
     }
 }
 

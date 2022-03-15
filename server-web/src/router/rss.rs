@@ -3,8 +3,10 @@
 use crate::{
     types::{
         database::{ crates, task},
-        rss::{ RssInfo, SubscribeInfo, CratesQuery, TaskQuery },
-        ResMsg
+        rss::{ RssInfo, SubscribeInfo },
+        ResMsg,
+        task::{ TaskQuery, CratesQuery },
+        auth::Token
     },
     utility::get_username_by_session,
     DbConn,
@@ -38,7 +40,7 @@ pub async fn info(url: Form<Strict<String>>) -> Value {
 
 // subscribe rss feed
 #[post("/subscribe", data = "<info>")]
-pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value, RssError> {
+pub async fn subscribe(token: Token, info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value, RssError> {
 
     let SubscribeInfo{ url, session_data } = info.into_inner();
     let url_uuid = Uuid::new_v3(&Uuid::NAMESPACE_URL, url.as_bytes()).to_string();
@@ -77,12 +79,17 @@ pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value,
         };
         diesel::insert_into(task::table).values(task_info).execute(con)?;
 
-        Ok(json!(ResMsg{ status: 202, msg: String::from("subscribe success"), ..Default::default()}))
+        Ok(json!(ResMsg{ status: 202, msg: token.0, ..Default::default()}))
 
     }).await
-
-    
 }
+
+// #[post("/item", data = "<item_id>")]
+// pub fn item(item_id: Form<Strict<String>>) -> Result<Value, Error> {
+
+//     let item_url = 
+    
+// }
 
 
 #[cfg(test)]

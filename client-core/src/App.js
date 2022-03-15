@@ -17,6 +17,7 @@ export default class App extends React.Component {
 				login_info: {
         			is_login: cfg_ctx["is_login"],
         			username: cfg_ctx["username"],
+					token: cfg_ctx['token']
 				},
 				setLoginInfo: this.setLoginInfo
 			}
@@ -45,12 +46,8 @@ export default class App extends React.Component {
 				setLoginInfo: this.setLoginInfo
 			}
 		})
-
-		let content = {
-			is_login: info.is_login,
-			username: info.username,
-		};
-		Config.writeAll(content);
+		
+		Config.writeAll(info);
 	}
 }
 
