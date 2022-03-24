@@ -9,7 +9,7 @@ extern crate rocket;
 #[macro_use]
 extern crate diesel;
 
-use rocket::http::Method::{Get, Post};
+use rocket::{http::Method::{Get, Post}, routes};
 use rocket_cors::AllowedOrigins;
 use rocket_sync_db_pools::database;
 use router::{

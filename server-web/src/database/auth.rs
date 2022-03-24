@@ -79,17 +79,17 @@ pub fn register(con: &SqliteConnection, username: String, passwd: String) -> Res
     Ok(())
 }
 
-pub fn validate_token(con: &SqliteConnection, token: String) -> Result<(), RssError> {
+// pub fn validate_token(con: &SqliteConnection, token: String) -> Result<(), RssError> {
 
-    login_state::table
-        .filter(login_state::token.eq(token))
-        .select(login_state::username)
-        .first(con)
-        .or_else(|e| {
-            match e {
-                Error::NotFound => Err(RssError::AuthError(InvalidToken)),
-                _ => Err(RssError::DatabaseError(e))
-            }
-        })?;
-    Ok(())
-}
+//     login_state::table
+//         .filter(login_state::token.eq(token))
+//         .select(login_state::username)
+//         .first(con)
+//         .or_else(|e| {
+//             match e {
+//                 Error::NotFound => Err(RssError::AuthError(InvalidToken)),
+//                 _ => Err(RssError::DatabaseError(e))
+//             }
+//         })?;
+//     Ok(())
+// }
