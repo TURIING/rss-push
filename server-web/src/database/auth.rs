@@ -21,7 +21,7 @@ pub fn login(
     con: &SqliteConnection, 
     username: String,
     passwd: String
-) -> Result<String, RssError> {
+) -> Result<(), RssError> {
 
      let passwd_query = user::table
             .filter(user::username.eq(username.clone()))
@@ -36,9 +36,9 @@ pub fn login(
         Ok(p) => {
             if p == passwd {
                 // passwd correct
-                let token = Uuid::new_v4().to_string();
-                login_state_insert(con, username, token.clone())?;
-                Ok(token)
+                //let token = Uuid::new_v4().to_string();
+                //login_state_insert(con, username, token.clone())?;
+                Ok(())
             } else {
                 // passwd error
                 Err(RssError::AuthError(PasswdMistake))

@@ -32,10 +32,16 @@ struct RssError: Identifiable {
     var error: RssErrorType
 }
 
+// An error type for login or register operation
 enum AccountError: Error {
     case passwdMistake
     case userNotExist
     case alreadyLogged
     case alreadyRegister
     case invalidToken
+}
+
+// An error type for subscribe rss
+enum SubscribeError: Error {
+    case urlInvalid
 }

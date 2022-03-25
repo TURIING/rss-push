@@ -10,9 +10,9 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var contentData: ContentViewModel
-    @State var isShowSubscribe: Bool = false
     @StateObject var accountViewModel = AccountViewModel.instance
-    @State var isShow: Bool = !AccountViewModel.instance.info.isLogin
+    @State var isShowAccountView: Bool = !AccountViewModel.instance.info.isLogin
+    @State var isShowSubscribeRssView: Bool = false
     
     var body: some View {
         // The default spcing of HStack is 10. I've been looking for this bug for a long time...
@@ -37,19 +37,22 @@ struct ContentView: View {
         #if os(macOS)
         .toolbar {
             ToolbarItem(placement: .status) {
-                Button(action: toggleSidebar) {
+                Button(action: {isShowSubscribeRssView.toggle()}) {
                     Image(systemName: "plus")
                         .foregroundColor(Color.theme.foreground)
                 }
                 .padding(.leading, 250)
+                .sheet(isPresented: $isShowSubscribeRssView) {
+                    SubscribeRssView(isShowSubscribeRssView: $isShowSubscribeRssView)
+                }
             }
         }
         #endif
         .alert(item: $contentData.rssError) { rssError in
             Alert(title: Text("Error"), message: Text(rssError.error.localizedDescription))
         }
-        .sheet(isPresented: $isShow) {
-            AccountView(isShow: $isShow).environmentObject(contentData)
+        .sheet(isPresented: $isShowAccountView) {
+            AccountView(isShowAccountView: $isShowAccountView)
         }
         
         

@@ -6,6 +6,8 @@ use crate::{
         rss::{ RssInfo, SubscribeInfo },
         ResMsg,
         task::{ TaskQuery, CratesQuery },
+        SuccessStatus,
+        auth::Token,
     },
     utility::get_username_by_session,
     DbConn,
@@ -18,23 +20,18 @@ use rocket::{
 };
 use rss::Channel;
 use uuid::Uuid;
-//afb79651-4dcd-4400-903c-5b9fa1efd019
 
 
 // return rss info
 #[post("/info", data = "<url>")]
-pub async fn info(url: Form<Strict<String>>) -> Value {
+pub async fn info(token: Token, url: Form<Strict<String>>) -> Result<Value, RssError> {
     let content = reqwest::get(url.as_str())
-        .await
-        .unwrap()
+        .await?
         .bytes()
-        .await
-        .unwrap();
-    let channel = Channel::read_from(&content[..]).unwrap();
-    json!(RssInfo {
-        title: channel.title,
-        description: channel.description
-    })
+        .await?;
+    let channel = Channel::read_from(&content[..])?;
+    
+    Ok(json!(ResMsg{ status: SuccessStatus::RSSINFO, title: channel.title, description: channel.description, ..Default::default()}))
 }
 
 // subscribe rss feed
@@ -69,7 +66,6 @@ pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value,
             })?;
 
         // Join the task queue
-
         let task_info = TaskQuery {
             crates_id: String::from(url_uuid),
             task_type: String::from("rss"),
@@ -78,7 +74,7 @@ pub async fn subscribe(info: Json<SubscribeInfo>, conn: DbConn) -> Result<Value,
         };
         diesel::insert_into(task::table).values(task_info).execute(con)?;
 
-        Ok(json!(ResMsg{ status: 202, msg: String::from("success"), ..Default::default()}))
+        Ok(json!(ResMsg{ status: SuccessStatus::SUBSCRIBE, msg: String::from("success"), ..Default::default()}))
 
     }).await
 }

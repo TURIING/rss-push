@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AccountView: View {
-    @Binding var isShow: Bool
+    @Binding var isShowAccountView: Bool
     @State private var username: String = ""
     @State private var passwd: String = ""
     @State private var passwdAgain: String = ""
@@ -21,7 +21,7 @@ struct AccountView: View {
     
     var body: some View {
         ZStack {
-            Color.theme.accountViewBg
+            Color.theme.sheetBg
             
             if self.isToggleView {
                 registerView
@@ -63,7 +63,7 @@ struct AccountView: View {
                 AccountViewModel.instance.login(username: username, passwd: passwd) { result in
                     switch result {
                     case .success(_):
-                        isShow.toggle()
+                        isShowAccountView.toggle()
                         #if os(macOS)
                         NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
                         #endif

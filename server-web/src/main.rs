@@ -3,6 +3,7 @@ mod types;
 mod utility;
 mod error;
 mod database;
+mod constant;
 
 #[macro_use]
 extern crate rocket;
@@ -21,8 +22,9 @@ use router::{
 #[database("sqlite_rss")]
 pub struct DbConn(diesel::SqliteConnection);
 
-#[launch]
-fn rocket() -> _ {
+#[rocket::main]
+async fn main() {
+    // handling the cors service
     let cors = rocket_cors::CorsOptions {
         allowed_origins: AllowedOrigins::All,
         allowed_methods: vec![Post, Get].into_iter().map(From::from).collect(),
@@ -37,4 +39,7 @@ fn rocket() -> _ {
         .mount("/api/rss", routes![info, subscribe])
         .attach(DbConn::fairing())
         .attach(cors)
+        .launch()
+        .await
+        .unwrap();
 }

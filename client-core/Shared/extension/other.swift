@@ -68,7 +68,7 @@ struct ColorTheme {
     let background = Color("Background")
     let sideBarItemBg = Color("SideBarItemBg")
     let sideBarItemFg = Color("SideBarItemFg")
-    let accountViewBg = Color("AccountViewBg")
+    let sheetBg = Color("SheetBg")
     let accountViewTextFieldBg = Color("AccountViewTextFieldBg")
 }
 

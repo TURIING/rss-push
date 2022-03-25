@@ -12,14 +12,21 @@ use std::{
 
 };
 
+
 #[derive(Debug, Error)]
 pub enum RssError {
-    #[error("Authentication error")]
+    #[error("Authentication error.")]
     AuthError(AuthErrorKind),
-    #[error("Unknown error")]
+    #[error("Unknown error.")]
     UnknownError(String),
-    #[error("Database error")]
-    DatabaseError(#[from] diesel::result::Error)
+    #[error("Database error.")]
+    DatabaseError(#[from] diesel::result::Error),
+    #[error("Network error.")]
+    NetWorkError(#[from] reqwest::Error),
+    #[error("Rss parse error.")]
+    RssParseError(#[from] rss::Error),
+    #[error("Jwt invalid.")]
+    JwtInvalidError(#[from] jsonwebtoken::errors::Error)
 }
 impl<'r, 'o: 'r> Responder<'r, 'o> for RssError {
     fn respond_to(self, _: &'r Request<'_>) -> response::Result<'o> {
@@ -37,6 +44,9 @@ impl<'r, 'o: 'r> Responder<'r, 'o> for RssError {
             },
             RssError::UnknownError(e) => ResMsg { status: 500, msg: e.to_string(), ..Default::default()},
             RssError::DatabaseError(e) => ResMsg { status: 501, msg: e.to_string(), ..Default::default()},
+            RssError::NetWorkError(e) => ResMsg { status: 502, msg: e.to_string(), ..Default::default()},
+            RssError::RssParseError(e) => ResMsg { status: 503, msg: e.to_string(), ..Default::default()},
+            RssError::JwtInvalidError(e) => ResMsg { status: 504, msg: e.to_string(), ..Default::default()},
         };
 
         Response::build()
