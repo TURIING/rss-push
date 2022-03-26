@@ -9,10 +9,10 @@ import SwiftUI
 import Alamofire
 
 
-class AccountViewModel: ObservableObject {
+class Account: ObservableObject {
     @Published var info: AccountInfo
     
-    static let instance = AccountViewModel()
+    static let instance = Account()
     
     init() {
         self.info = AccountConfig.instance.getInfo()
