@@ -39,10 +39,12 @@
 		CAC6198627E8810B00361EBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAC6195B27E8810B00361EBB /* Assets.xcassets */; };
 		CAC6199627E8846A00361EBB /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC6199527E8846A00361EBB /* SideBar.swift */; };
 		CAC6199727E8846A00361EBB /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC6199527E8846A00361EBB /* SideBar.swift */; };
+		CAD6E63327EED02F0020A35B /* Rss.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD6E63227EED02E0020A35B /* Rss.swift */; };
+		CAD6E63427EED02F0020A35B /* Rss.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD6E63227EED02E0020A35B /* Rss.swift */; };
 		CAF8C1F427E9B4E5002B944E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1F327E9B4E5002B944E /* AccountView.swift */; };
 		CAF8C1F527E9B4E5002B944E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1F327E9B4E5002B944E /* AccountView.swift */; };
-		CAF8C1F727E9BED7002B944E /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1F627E9BED7002B944E /* AccountViewModel.swift */; };
-		CAF8C1F827E9BED7002B944E /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1F627E9BED7002B944E /* AccountViewModel.swift */; };
+		CAF8C1F727E9BED7002B944E /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1F627E9BED7002B944E /* Account.swift */; };
+		CAF8C1F827E9BED7002B944E /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1F627E9BED7002B944E /* Account.swift */; };
 		CAF8C1FB27EA186E002B944E /* other.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1FA27EA186E002B944E /* other.swift */; };
 		CAF8C1FC27EA186F002B944E /* other.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1FA27EA186E002B944E /* other.swift */; };
 		CAF8C1FF27EA2516002B944E /* SideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C1FE27EA2516002B944E /* SideBarView.swift */; };
@@ -99,8 +101,9 @@
 		CAC6197D27E8810B00361EBB /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		CAC6197F27E8810B00361EBB /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
 		CAC6199527E8846A00361EBB /* SideBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBar.swift; sourceTree = "<group>"; };
+		CAD6E63227EED02E0020A35B /* Rss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rss.swift; sourceTree = "<group>"; };
 		CAF8C1F327E9B4E5002B944E /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
-		CAF8C1F627E9BED7002B944E /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
+		CAF8C1F627E9BED7002B944E /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		CAF8C1FA27EA186E002B944E /* other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = other.swift; sourceTree = "<group>"; };
 		CAF8C1FE27EA2516002B944E /* SideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarView.swift; sourceTree = "<group>"; };
 		CAF8C20127EA25EC002B944E /* SideBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarItem.swift; sourceTree = "<group>"; };
@@ -177,6 +180,7 @@
 		CAC6195827E8810500361EBB /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				CAD6E63127EECEB30020A35B /* utility */,
 				CAF8C1F927EA185D002B944E /* extension */,
 				CAF8C1FD27EA24F0002B944E /* page */,
 				CAF8C1EF27E9A655002B944E /* component */,
@@ -226,6 +230,15 @@
 			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
+		CAD6E63127EECEB30020A35B /* utility */ = {
+			isa = PBXGroup;
+			children = (
+				CAF8C1F627E9BED7002B944E /* Account.swift */,
+				CAD6E63227EED02E0020A35B /* Rss.swift */,
+			);
+			path = utility;
+			sourceTree = "<group>";
+		};
 		CAF8C1EF27E9A655002B944E /* component */ = {
 			isa = PBXGroup;
 			children = (
@@ -255,7 +268,6 @@
 				CA8E6DFE27EB158E003484EF /* SubscribeView.swift */,
 				CA8E6E0127EB1668003484EF /* SettingView.swift */,
 				CAF8C1F327E9B4E5002B944E /* AccountView.swift */,
-				CAF8C1F627E9BED7002B944E /* AccountViewModel.swift */,
 				CA08FAA527ECA44700EE09D4 /* SubscribeRssView.swift */,
 			);
 			path = page;
@@ -512,7 +524,7 @@
 				CAF8C1FF27EA2516002B944E /* SideBarView.swift in Sources */,
 				CA8E6E0227EB1668003484EF /* SettingView.swift in Sources */,
 				CA8E6DFF27EB158E003484EF /* SubscribeView.swift in Sources */,
-				CAF8C1F727E9BED7002B944E /* AccountViewModel.swift in Sources */,
+				CAF8C1F727E9BED7002B944E /* Account.swift in Sources */,
 				CAC6198327E8810B00361EBB /* ContentView.swift in Sources */,
 				CAF8C1F427E9B4E5002B944E /* AccountView.swift in Sources */,
 				CAC6199627E8846A00361EBB /* SideBar.swift in Sources */,
@@ -521,6 +533,7 @@
 				CAF8C20227EA25EC002B944E /* SideBarItem.swift in Sources */,
 				CA8E6DFC27EB157C003484EF /* MessageView.swift in Sources */,
 				CA08FAA027EC68EB00EE09D4 /* error.swift in Sources */,
+				CAD6E63327EED02F0020A35B /* Rss.swift in Sources */,
 				CAF8C20827EA2C76002B944E /* SideBarItemModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -537,7 +550,7 @@
 				CAF8C20027EA2516002B944E /* SideBarView.swift in Sources */,
 				CA8E6E0327EB1668003484EF /* SettingView.swift in Sources */,
 				CA8E6E0027EB158E003484EF /* SubscribeView.swift in Sources */,
-				CAF8C1F827E9BED7002B944E /* AccountViewModel.swift in Sources */,
+				CAF8C1F827E9BED7002B944E /* Account.swift in Sources */,
 				CAC6198427E8810B00361EBB /* ContentView.swift in Sources */,
 				CAF8C1F527E9B4E5002B944E /* AccountView.swift in Sources */,
 				CAC6199727E8846A00361EBB /* SideBar.swift in Sources */,
@@ -546,6 +559,7 @@
 				CAF8C20327EA25EC002B944E /* SideBarItem.swift in Sources */,
 				CA8E6DFD27EB157C003484EF /* MessageView.swift in Sources */,
 				CA08FAA127EC68EB00EE09D4 /* error.swift in Sources */,
+				CAD6E63427EED02F0020A35B /* Rss.swift in Sources */,
 				CAF8C20927EA2C76002B944E /* SideBarItemModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

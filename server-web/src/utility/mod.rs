@@ -50,7 +50,7 @@ impl Jwt {
             &DecodingKey::from_secret(JWTSECRET), 
             &Validation::new(JWTALG)
         ) {
-            Ok(tokenData) => Ok(tokenData.claims.username),
+            Ok(token_data) => Ok(token_data.claims.username),
             Err(e) => Err(RssError::JwtInvalidError(e)),
         }
     }

@@ -10,8 +10,8 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var contentData: ContentViewModel
-    @StateObject var accountViewModel = AccountViewModel.instance
-    @State var isShowAccountView: Bool = !AccountViewModel.instance.info.isLogin
+    @StateObject var account = Account.instance
+    @State var isShowAccountView: Bool = !Account.instance.info.isLogin
     @State var isShowSubscribeRssView: Bool = false
     
     var body: some View {

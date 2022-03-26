@@ -60,7 +60,7 @@ struct AccountView: View {
             .frame(width: 240, height: 100)
                                 
             Button(action: {
-                AccountViewModel.instance.login(username: username, passwd: passwd) { result in
+                Account.instance.login(username: username, passwd: passwd) { result in
                     switch result {
                     case .success(_):
                         isShowAccountView.toggle()
@@ -69,9 +69,9 @@ struct AccountView: View {
                         #endif
                     case .failure(let err):
                         switch err {
-                        case AccountError.passwdMistake: self.alertText = "The entered password is incorrect"
-                        case AccountError.userNotExist: self.alertText = "The user does not exist"
-                        case AccountError.alreadyLogged: self.alertText = "You have logged in to the account"
+                        case RssErrorType.passwdMistake: self.alertText = "The entered password is incorrect"
+                        case RssErrorType.userNotExist: self.alertText = "The user does not exist"
+                        case RssErrorType.alreadyLogged: self.alertText = "You have logged in to the account"
                         case RssErrorType.jsonDecodeError: self.alertText = "Json decode error"
                         case RssErrorType.networkError: self.alertText = "Network error"
                         default: self.alertText = "Unknown error"
@@ -144,13 +144,13 @@ struct AccountView: View {
             .frame(width: 240, height: 100)
                                 
             Button(action: {
-                AccountViewModel.instance.register(username: username, passwd: passwd) { result in
+                Account.instance.register(username: username, passwd: passwd) { result in
                     switch result {
                     case .success(_):
                         self.alertText = "Registered successfully"
                     case .failure(let err):
                         switch err {
-                        case AccountError.alreadyRegister: self.alertText = "The account has already been registered."
+                        case RssErrorType.alreadyRegister: self.alertText = "The account has already been registered."
                         default: self.alertText = "Unknown error"
                         }
                     }

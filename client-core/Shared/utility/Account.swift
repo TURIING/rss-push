@@ -30,14 +30,15 @@ class Account: ObservableObject {
         ).responseData { res in
             switch res.result {
             case let .success(data):
-                if let data = try? JSONDecoder().decode(Msg.self, from: data) {
+                if let data = try? JSONDecoder().decode(ServerMsg.self, from: data) {
                     switch data.status {
                     case 201:
+                        self.info = AccountInfo(isLogin: true, token: data.token!, username: username)
                         AccountConfig.instance.setLogin(username: username, token: data.token!)
                         completion(.success(()))
-                    case 404: completion(.failure(AccountError.userNotExist))
-                    case 401: completion(.failure(AccountError.passwdMistake))
-                    case 402: completion(.failure(AccountError.alreadyLogged))
+                    case 404: completion(.failure(RssErrorType.userNotExist))
+                    case 401: completion(.failure(RssErrorType.passwdMistake))
+                    case 402: completion(.failure(RssErrorType.alreadyLogged))
                     default: completion(.failure(RssErrorType.unknownError))
                     }
                 } else {
@@ -60,10 +61,10 @@ class Account: ObservableObject {
         ).responseData { res in
             switch res.result {
             case let .success(data):
-                if let data = try? JSONDecoder().decode(Msg.self, from: data) {
+                if let data = try? JSONDecoder().decode(ServerMsg.self, from: data) {
                     switch data.status {
                     case 200: completion(.success(()))
-                    case 400: completion(.failure(AccountError.alreadyRegister))
+                    case 400: completion(.failure(RssErrorType.alreadyRegister))
                     default: completion(.failure(RssErrorType.unknownError))
                     }
                 } else {

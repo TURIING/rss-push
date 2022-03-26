@@ -1,12 +1,11 @@
 use crate::{
     types::database::{login_state, user},
     error::{ RssError, AuthErrorKind::InvalidToken },
-    DbConn,
     utility::Jwt,
 };
 use rocket::{
     serde::{Deserialize, Serialize}, 
-    request::{ FromRequest, self, Request, Outcome},
+    request::{ FromRequest, Request, Outcome },
     http::Status,
 
 };

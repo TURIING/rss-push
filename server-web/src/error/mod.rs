@@ -31,7 +31,6 @@ pub enum RssError {
 impl<'r, 'o: 'r> Responder<'r, 'o> for RssError {
     fn respond_to(self, _: &'r Request<'_>) -> response::Result<'o> {
         
-
         let msg = match self {
             RssError::AuthError(kind) => {
                 match kind {

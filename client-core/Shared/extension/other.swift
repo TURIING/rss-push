@@ -84,6 +84,7 @@ struct CustomTextFieldStyleView<Content: View>: View {
         content
             .textFieldStyle(PlainTextFieldStyle())
             .font(.system(size: 14))
+            .lineLimit(1)
             .disableAutocorrection(true)
             .padding(.horizontal, 15)
             .padding(.vertical, 10)
@@ -91,10 +92,13 @@ struct CustomTextFieldStyleView<Content: View>: View {
 }
 
 // msg type return from server
-struct Msg: Codable {
-    var msg: String
+struct ServerMsg: Codable {
+    var msg: String?
     var status: Int
     var token: String?
+    var title: String?
+    var description: String?
+    
 }
 
 
