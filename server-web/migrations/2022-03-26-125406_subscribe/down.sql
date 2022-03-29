@@ -1,2 +1,2 @@
 -- This file should undo anything in `up.sql`
-drop table login_state
+drop table subscribe

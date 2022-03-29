@@ -34,7 +34,9 @@ class Rss {
                 if let data = try? JSONDecoder().decode(ServerMsg.self, from: data){
                     switch data.status {
                     case 203:
-                        completion(.success(RssInfo(title: data.title!, description: data.description!)))
+                        completion(.success(
+                            RssInfo(url: nil, title: data.rssInfo!.title, description: data.rssInfo!.description)
+                        ))
                     case 503:
                         completion(.failure(RssErrorType.rssParseError))
                     default:
@@ -92,7 +94,4 @@ class Rss {
 }
 
 
-struct RssInfo: Codable {
-    var title: String
-    var description: String
-}
+

@@ -13,7 +13,7 @@ struct AccountView: View {
     @State private var passwd: String = ""
     @State private var passwdAgain: String = ""
     @State private var disable: Bool = true
-    @EnvironmentObject var contentData: ContentViewModel
+    
     // Text for show some information
     @State private var alertText: String = ""
     // toggle login or register view

@@ -1,11 +1,10 @@
-use diesel::sqlite::Sqlite;
 use diesel::{SqliteConnection, QueryDsl, RunQueryDsl, prelude::*};
 
 use crate::types::{ task::TaskQuery, database::task };
 use crate::error::RssError;
 
 
-pub fn get_record_by_id(
+pub fn get_records_by_id(
     con: &SqliteConnection, 
     id: i32, 
     limit: i64
@@ -26,7 +25,7 @@ pub fn insert(
 ) -> Result<(), RssError> {
     let task_info = TaskQuery {
         id: None,
-        crates_id: String::from(url_uuid),
+        crate_id: String::from(url_uuid),
         task_type: String::from("rss"),
         username,
         params: String::new()

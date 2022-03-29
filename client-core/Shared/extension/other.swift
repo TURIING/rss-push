@@ -91,15 +91,8 @@ struct CustomTextFieldStyleView<Content: View>: View {
     }
 }
 
-// msg type return from server
-struct ServerMsg: Codable {
-    var msg: String?
-    var status: Int
-    var token: String?
-    var title: String?
-    var description: String?
-    
-}
+
+
 
 
 

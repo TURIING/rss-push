@@ -5,6 +5,7 @@ mod error;
 mod database;
 mod constant;
 mod core;
+mod rss;
 
 #[macro_use]
 extern crate rocket;
@@ -21,7 +22,7 @@ use rocket_sync_db_pools::database;
 use router::{
     auth::{login, register},
     hello,
-    rss::{ info, subscribe}
+    rss::{ info, subscribe, subscribed}
 };
 
 #[database("sqlite_rss")]
@@ -46,6 +47,7 @@ async fn main() {
         .mount("/", routes![hello])
         .mount("/api/auth", routes![login, register])
         .mount("/api/rss", routes![info, subscribe])
+        .mount("/api/crate", routes![subscribed])
         .attach(DbConn::fairing())
         .attach(cors)
         .launch()

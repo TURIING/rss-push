@@ -1,31 +1,9 @@
-use crate::types::{
-    database::login_state,
-    auth::Claims,
-};
+use crate::types::auth::Claims;
+
 use crate::constant::{JWTSECRET, JWTALG};
-use crate::error::{ RssError, AuthErrorKind::UserNotExist};
+use crate::error::RssError;
 
-use diesel::{SqliteConnection,QueryDsl, RunQueryDsl, result::Error::NotFound, prelude::*};
 use jsonwebtoken::{ EncodingKey, DecodingKey, Validation };
-
-pub fn get_username_by_session(token: String, con: &mut SqliteConnection) -> Result<String, RssError> {
-    
-    let username_query = login_state::table
-        .filter(login_state::token.eq(token))
-        .select(login_state::username)
-        .first::<String>(con);
-    match username_query {
-        Ok(username) => {
-            Ok(username)
-        },
-        Err(e) => {
-            match e {
-                NotFound => Err(RssError::AuthError(UserNotExist)),
-                _ => Err(RssError::UnknownError(e.to_string()))
-            }
-        }
-    }
-}
 
 pub struct Jwt;
 impl Jwt {

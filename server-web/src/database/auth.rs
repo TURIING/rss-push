@@ -1,11 +1,11 @@
 use crate::{
     error::{ 
         RssError, 
-        AuthErrorKind::{PasswdMistake, UserNotExist, AlreadyLogged, AlreadyRegister, InvalidToken}
+        AuthErrorKind::{PasswdMistake, UserNotExist, AlreadyRegister}
     },
     types::{ 
-        database::{ user, login_state},
-        auth::{ LoginStateInfo, AccountInfo }
+        database::user,
+        auth::AccountInfo,
     }
 };
 use diesel::SqliteConnection;
@@ -42,22 +42,6 @@ pub fn login(
             }
         }
     }
-}
-
-fn login_state_insert(con: &SqliteConnection, username: String, token: String) -> Result<(), RssError> {
-
-    let state_info = LoginStateInfo { username, token };
-
-    diesel::insert_into(login_state::table)
-        .values(state_info)
-        .execute(con)
-        .or_else(|e| {
-            match e {
-                Error::DatabaseError(UniqueViolation, _) => Err(RssError::AuthError(AlreadyLogged)),
-                _ => Err(RssError::DatabaseError(e)),
-            }
-        })?;
-    Ok(())
 }
 
 pub fn register(con: &SqliteConnection, username: String, passwd: String) -> Result<(), RssError> {

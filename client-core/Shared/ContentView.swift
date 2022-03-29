@@ -26,7 +26,7 @@ struct ContentView: View {
                 switch contentData.selectTab {
                 case "Home": HomeView();
                 case "Message": MessageView();
-                case "Subscribe": SubscribeView();
+                case "Subscribe": SubscribedView();
                 case "Setting": SettingView();
                 default : Text("None")
                 }

@@ -1,23 +1,23 @@
 table! {
-    crates (crates_id) {
-        crates_id -> Text,
-        crates_type -> Text,
+    crates (crate_id) {
+        crate_id -> Text,
+        crate_type -> Text,
         info -> Text,
     }
 }
 
 table! {
-    login_state (id) {
+    subscribe (id) {
         id -> Nullable<Integer>,
         username -> Text,
-        token -> Text,
+        crate_id -> Text,
     }
 }
 
 table! {
     task (id) {
         id -> Nullable<Integer>,
-        crates_id -> Text,
+        crate_id -> Text,
         task_type -> Text,
         username -> Text,
         params -> Text,
@@ -32,9 +32,11 @@ table! {
     }
 }
 
+joinable!(subscribe -> crates (crate_id));
+
 allow_tables_to_appear_in_same_query!(
     crates,
-    login_state,
+    subscribe,
     task,
     user,
 );

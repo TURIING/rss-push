@@ -1,6 +1,6 @@
 use crate::{
     types::{
-        auth::{ AccountInfo, Token},
+        auth::AccountInfo,
         ResMsg,
         SuccessStatus,
         

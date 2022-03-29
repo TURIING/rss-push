@@ -10,4 +10,7 @@ import SwiftUI
 class ContentViewModel: ObservableObject {
     @Published var selectTab: String = "Home"
     @Published var rssError: RssError? = nil
+    @Published var subscribed: [ResCrateInfo]? = nil
+    @Published var selectedSubscribedItem: String? = nil
+    @Published var selectedSubscribedItemPosition: String? = nil
 }

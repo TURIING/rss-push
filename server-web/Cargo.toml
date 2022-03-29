@@ -14,9 +14,7 @@ rss = "2.0.0"
 uuid = {version = "0.8.2", features = ["v4", "v3"]}
 thiserror = "1.0.30"
 jsonwebtoken = "8.0.1"
-serde = {version = "1.0", features = ["derive"] }
 time = {version = "0.3.9", features = ["std", "serde"]}
-
 
 [dependencies.rocket_sync_db_pools]
 version = "0.1.0-rc.1"

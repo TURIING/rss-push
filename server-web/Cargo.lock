@@ -1587,7 +1587,6 @@ dependencies = [
  "rocket_cors",
  "rocket_sync_db_pools",
  "rss",
- "serde",
  "thiserror",
  "time 0.3.9",
  "uuid",

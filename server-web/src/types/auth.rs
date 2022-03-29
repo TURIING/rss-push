@@ -1,5 +1,5 @@
 use crate::{
-    types::database::{login_state, user},
+    types::database::user,
     error::{ RssError, AuthErrorKind::InvalidToken },
     utility::Jwt,
 };
@@ -28,16 +28,9 @@ pub struct UserQuery {
     pub passwd: String,
 }
 
-
-#[derive(Insertable, AsChangeset)]
-#[table_name = "login_state"]
-pub struct LoginStateInfo {
-    pub username: String,
-    pub token: String,
-}
-
 // structure for jwt
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
 pub struct Claims {
     pub iss: String,
     pub sub: String,
@@ -47,7 +40,7 @@ pub struct Claims {
 }
 impl Default for Claims {
     fn default() -> Self {
-        let timestamp = OffsetDateTime::now_utc() + Duration::days(30);
+        let timestamp = OffsetDateTime::now_utc() + Duration::days(1);
         Claims {
             iss: String::from("TURIING"), 
             sub: String::from("rss-push"),
