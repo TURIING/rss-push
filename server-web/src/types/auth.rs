@@ -1,5 +1,4 @@
 use crate::{
-    types::database::user,
     error::{ RssError, AuthErrorKind::InvalidToken },
     utility::Jwt,
 };
@@ -11,22 +10,7 @@ use rocket::{
 };
 use time::{ OffsetDateTime,Duration };
 
-#[derive(Insertable, Serialize, Deserialize)]
-#[serde(crate = "rocket::serde")]
-#[table_name = "user"]
-pub struct AccountInfo {
-    pub username: String,
-    pub passwd: String,
-}
 
-#[derive(Queryable, AsChangeset, Deserialize, Serialize)]
-#[serde(crate = "rocket::serde")]
-#[table_name = "user"]
-pub struct UserQuery {
-    pub id: Option<i32>,
-    pub username: String,
-    pub passwd: String,
-}
 
 // structure for jwt
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,7 +24,7 @@ pub struct Claims {
 }
 impl Default for Claims {
     fn default() -> Self {
-        let timestamp = OffsetDateTime::now_utc() + Duration::days(1);
+        let timestamp = OffsetDateTime::now_utc() + Duration::days(30);
         Claims {
             iss: String::from("TURIING"), 
             sub: String::from("rss-push"),

@@ -1,6 +1,6 @@
 use crate::{
     types::{
-        auth::AccountInfo,
+        database::AccountInfo,
         ResMsg,
         SuccessStatus,
         

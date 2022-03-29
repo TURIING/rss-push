@@ -1,11 +1,11 @@
 pub mod auth;
 pub mod database;
-pub mod task;
+pub mod schema;
 
 use rocket::serde::Serialize;
 use crate::rss::RssInfo;
 
-use self::task::CrateInfo;
+use self::database::CrateInfo;
 
 // the response message body
 #[derive(Serialize, Default)]

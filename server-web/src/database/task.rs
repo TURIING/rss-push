@@ -1,6 +1,6 @@
 use diesel::{SqliteConnection, QueryDsl, RunQueryDsl, prelude::*};
 
-use crate::types::{ task::TaskQuery, database::task };
+use crate::types::{ database::TaskQuery, schema::task };
 use crate::error::RssError;
 
 

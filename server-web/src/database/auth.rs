@@ -4,8 +4,8 @@ use crate::{
         AuthErrorKind::{PasswdMistake, UserNotExist, AlreadyRegister}
     },
     types::{ 
-        database::user,
-        auth::AccountInfo,
+        schema::user,
+        database::AccountInfo,
     }
 };
 use diesel::SqliteConnection;

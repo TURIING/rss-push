@@ -2,7 +2,7 @@ use crate::{
     types::{
         ResMsg,
         SuccessStatus,
-        auth::Token, task::CrateInfo, ResCrateInfo,
+        auth::Token, database::CrateInfo, ResCrateInfo,
     },
     DbConn,
     error::RssError,

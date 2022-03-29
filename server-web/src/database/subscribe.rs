@@ -2,8 +2,8 @@
 use diesel::{SqliteConnection, QueryDsl ,RunQueryDsl, prelude::*};
 use crate::error::RssError;
 //use crate::types::task::SubscribeQuery;
-use crate::types::database::subscribe;
-use crate::types::task::SubscribeQuery;
+use crate::types::schema::subscribe;
+use crate::types::database::SubscribeQuery;
 
 pub fn get_records_by_username(
     con: &SqliteConnection,

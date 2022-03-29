@@ -1,7 +1,7 @@
 use crate::error::RssError;
 use crate::types::{
-    database::crates,
-    task::{ CratesQuery, CrateInfo},
+    schema::crates,
+    database::{ CratesQuery, CrateInfo },
 };
 use rocket::serde::json::serde_json;
 use diesel::{SqliteConnection, QueryDsl, RunQueryDsl, prelude::*};
