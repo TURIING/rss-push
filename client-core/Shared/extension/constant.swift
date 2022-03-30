@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-let serverHost: URL = URL(string: "http://127.0.0.1:8000")!
+let serverHost: URL = URL(string: "http://43.156.116.236:80")!
 let loginUrlPath: String = "api/auth/login"
 let registerUrlPath: String = "api/auth/register"
 let rssInfoUrlPath: String = "api/rss/info"
