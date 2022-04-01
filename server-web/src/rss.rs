@@ -66,9 +66,14 @@ impl Rss {
                     }
                 }
             }
-
-            let tmp = RssItem {uuid: item_uuid.to_string(), title, description, content, link: link.to_string(), pub_date};
-            res.push(tmp);
+            
+            res.push(RssItem {
+                uuid: item_uuid.to_string(), 
+                title, description, 
+                content, 
+                link: link.to_string(), 
+                pub_date
+            });
             index += 1;
         }
         Ok(Some(res))
