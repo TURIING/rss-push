@@ -37,21 +37,25 @@ impl Rss {
         url: String, 
         last_msg_uuid: Option<Uuid>
     ) -> Result<Option<Vec<RssItem>>, RssError> {
+        info!("Start making requests to {}", url);
+        let user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.47";
 
-        let res = reqwest::Client::new()
-                        .get(url.clone())
-                        .timeout(Duration::new(10, 0))
+        let client = reqwest::Client::builder().timeout(Duration::new(2,0))
+            .user_agent(user_agent)
+            .build()?;
+        let res = client.get(url.clone())
                         .send().await?
                         .bytes().await?;
         let channel = Channel::read_from(&res[..])?;
-
+        info!("Request is completed");
         let mut res :Vec<RssItem> = Vec::new();
         let mut index = 1;
         for item in channel.items {
+
             let title = item.title.unwrap_or_default().to_string();
-            let description = item.description.unwrap_or_default().to_string();
             let link = item.link.unwrap_or_default();
-            let content = item.content.unwrap_or_default().to_string();
+            let content = item.description.unwrap_or_default().to_string();
+            let description = content.chars().take(30).into_iter().collect();
             let pub_date = item.pub_date.unwrap_or_default().to_string();
 
             let uuid_ctx = title.clone() + &link;

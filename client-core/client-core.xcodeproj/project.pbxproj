@@ -59,6 +59,8 @@
 		CAF8C20327EA25EC002B944E /* SideBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C20127EA25EC002B944E /* SideBarItem.swift */; };
 		CAF8C20827EA2C76002B944E /* SideBarItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C20727EA2C76002B944E /* SideBarItemModel.swift */; };
 		CAF8C20927EA2C76002B944E /* SideBarItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF8C20727EA2C76002B944E /* SideBarItemModel.swift */; };
+		CAFDDCA827F9944D0087BDF5 /* MessageListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFDDCA727F9944D0087BDF5 /* MessageListItem.swift */; };
+		CAFDDCA927F9944D0087BDF5 /* MessageListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFDDCA727F9944D0087BDF5 /* MessageListItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +119,7 @@
 		CAF8C1FE27EA2516002B944E /* SideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarView.swift; sourceTree = "<group>"; };
 		CAF8C20127EA25EC002B944E /* SideBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarItem.swift; sourceTree = "<group>"; };
 		CAF8C20727EA2C76002B944E /* SideBarItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarItemModel.swift; sourceTree = "<group>"; };
+		CAFDDCA727F9944D0087BDF5 /* MessageListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +259,7 @@
 				CAF8C20727EA2C76002B944E /* SideBarItemModel.swift */,
 				CA8E6E0427EB18E9003484EF /* Avatar.swift */,
 				CA96799D27F19A9A00579A08 /* SubscribedListItem.swift */,
+				CAFDDCA727F9944D0087BDF5 /* MessageListItem.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
@@ -546,6 +550,7 @@
 				CA8E6DF627EAFB3A003484EF /* ContentViewModel.swift in Sources */,
 				CAC6198127E8810B00361EBB /* client_coreApp.swift in Sources */,
 				CAF8C20227EA25EC002B944E /* SideBarItem.swift in Sources */,
+				CAFDDCA827F9944D0087BDF5 /* MessageListItem.swift in Sources */,
 				CA8E6DFC27EB157C003484EF /* MessageView.swift in Sources */,
 				CA08FAA027EC68EB00EE09D4 /* error.swift in Sources */,
 				CAD6E63327EED02F0020A35B /* Rss.swift in Sources */,
@@ -575,6 +580,7 @@
 				CA8E6DF727EAFB3A003484EF /* ContentViewModel.swift in Sources */,
 				CAC6198227E8810B00361EBB /* client_coreApp.swift in Sources */,
 				CAF8C20327EA25EC002B944E /* SideBarItem.swift in Sources */,
+				CAFDDCA927F9944D0087BDF5 /* MessageListItem.swift in Sources */,
 				CA8E6DFD27EB157C003484EF /* MessageView.swift in Sources */,
 				CA08FAA127EC68EB00EE09D4 /* error.swift in Sources */,
 				CAD6E63427EED02F0020A35B /* Rss.swift in Sources */,

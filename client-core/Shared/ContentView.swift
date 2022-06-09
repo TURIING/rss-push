@@ -11,8 +11,9 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var contentData: ContentViewModel
     @StateObject var account = Account.instance
-    @State var isShowAccountView: Bool = !Account.instance.info.isLogin
     @State var isShowSubscribeRssView: Bool = false
+    
+    
     
     var body: some View {
         // The default spcing of HStack is 10. I've been looking for this bug for a long time...
@@ -33,6 +34,17 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
+        .onAppear{
+            if account.isLogin() {
+                contentData.connect(username: account.info.username!)
+            }
+        }
+        .onChange(of: contentData.isShowAccountView) { _ in
+            if !contentData.isShowAccountView {
+                contentData.connect(username: account.info.username!)
+            }
+            
+        }
         .ignoresSafeArea(.all, edges: .all)
         #if os(macOS)
         .toolbar {
@@ -51,8 +63,8 @@ struct ContentView: View {
         .alert(item: $contentData.rssError) { rssError in
             Alert(title: Text("Error"), message: Text(rssError.error.localizedDescription))
         }
-        .sheet(isPresented: $isShowAccountView) {
-            AccountView(isShowAccountView: $isShowAccountView)
+        .sheet(isPresented: $contentData.isShowAccountView) {
+            AccountView()
         }
         
         

@@ -18,7 +18,7 @@ struct SideBarView: View {
             }
             Spacer()
             Avatar()
-            SideBarItem(name: sideBarItemData[3].name, image: sideBarItemData[3].image)
+            SideBarItem(name: sideBarItemData[2].name, image: sideBarItemData[2].image)
         }
         
         

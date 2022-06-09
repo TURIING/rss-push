@@ -22,6 +22,7 @@ struct SubscribeRssView: View {
     @State var rssDescription: String = ""
     @State var isFinishSearch: Bool = false
     @State var lastSearchUrl: String = ""
+    @EnvironmentObject var contentData: ContentViewModel
     
     private func closeSheet() {
         self.isShowSubscribeRssView.toggle()
@@ -85,7 +86,32 @@ struct SubscribeRssView: View {
                 Rss.subscribe(url: self.lastSearchUrl) { result in
                     switch result {
                     case .success(_):
+                        // Gets the subscribed list.
+                        Crate.Subscribed(){ result in
+                            switch result {
+                            case .success(let suc):
+                                if let data = suc {
+                                    self.contentData.subscribed = data
+                                } else {
+                                    self.contentData.subscribed = nil
+                                }
+                            case .failure(let err):
+                                self.contentData.rssError = RssError(error: err as! RssErrorType)
+                                return
+                            }
+                        }
+                        // Gets the messages
+                        Crate.refresh_message(){ result in
+                            switch result {
+                            case .success(let data):
+                                self.contentData.messages = data
+                            case .failure(let err):
+                                self.contentData.rssError = RssError(error: err as! RssErrorType)
+                                return
+                            }
+                        }
                         self.closeSheet()
+                        
                     case .failure(let err):
                         self.alertText = err.localizedDescription
                     }
@@ -128,6 +154,7 @@ struct SubscribeRssView: View {
                             self.rssTitle = info.title
                             self.rssDescription = info.description
                             self.lastSearchUrl = self.rssUrl
+                            self.alertText = ""
                         case .failure(let err):
                             alertText = err.localizedDescription
                         }

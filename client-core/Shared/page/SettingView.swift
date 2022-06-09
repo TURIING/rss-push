@@ -8,8 +8,26 @@
 import SwiftUI
 
 struct SettingView: View {
+    @EnvironmentObject var contentData: ContentViewModel
+    @State private var checked = true
     var body: some View {
-        Text("Setting page")
+        Spacer()
+        HStack(alignment: .top) {
+            VStack(alignment: .leading) {
+                
+                Text("常规")
+                    .padding(.top, 50)
+                Toggle(isOn: $contentData.isReceive) {
+                    Text("接收消息通知")
+                }.toggleStyle(CheckboxToggleStyle())
+                
+                
+                Spacer()
+            }
+            
+        }
+        .padding(.trailing, 100)
+        Spacer()
     }
 }
 

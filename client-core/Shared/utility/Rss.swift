@@ -91,6 +91,42 @@ class Rss {
             }
         }
     }
+    
+    static func unsubscribe(crate_id: String, completion: @escaping (Result<(), Error>) -> Void) {
+        
+        
+        let url = serverHost.appendingPathComponent(rssUnsubscribeUrlPath)
+        let param: [String:[String]] = ["crate_id":[crate_id]]
+        let token = Account.instance.info.token
+        let headers = HTTPHeaders(["Authorization" : "Bearer " + token!])
+        let encoder = URLEncodedFormParameterEncoder(encoder: URLEncodedFormEncoder(arrayEncoding: .noBrackets))
+        
+        AF.request(
+            url,
+            method: .post,
+            parameters: param,
+            encoder: encoder,
+            headers: headers
+            
+        ).responseData { res in
+            switch res.result {
+            case let .success(data):
+                if let data = try? JSONDecoder().decode(ServerMsg.self, from: data){
+                    switch data.status {
+                    case 210:
+                        completion(.success(()))
+                    default:
+                        completion(.failure(RssErrorType.unknownError))
+                    }
+                }else {
+                    completion(.failure(RssErrorType.jsonDecodeError))
+                }
+
+            case .failure(_):
+                completion(.failure(RssErrorType.networkError))
+            }
+        }
+    }
 }
 
 

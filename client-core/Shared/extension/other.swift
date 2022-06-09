@@ -45,14 +45,30 @@ struct HTMLStringView: UIViewRepresentable {
 }
 #else
 struct HTMLStringView: NSViewRepresentable {
-    let htmlContent: String
+    let htmlContent: String?
 
     func makeNSView(context: Context) -> WKWebView {
         return WKWebView()
     }
 
     func updateNSView(_ nsView: WKWebView, context: Context) {
-        nsView.loadHTMLString(htmlContent, baseURL: nil)
+        if let htmlContent = htmlContent {
+            nsView.loadHTMLString(htmlContent, baseURL: nil)
+        } else {
+            nsView.loadHTMLString("""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta charset="utf-8">
+                <style>
+                    :root {
+                      color-scheme: light dark;
+                    }
+                </style>
+                </html>
+            """, baseURL: nil)
+        }
+        
     }
 }
 #endif

@@ -50,6 +50,10 @@ class Account: ObservableObject {
             }
         }
     }
+    func logout() {
+        AccountConfig.instance.setLogout()
+        self.info = AccountConfig.instance.getInfo()
+    }
     func register(username: String, passwd: String, completion: @escaping(Result<(), Error>) -> Void) {
         let param = ["username": username, "passwd": passwd]
         let url = serverHost.appendingPathComponent(registerUrlPath)
@@ -118,10 +122,16 @@ class AccountConfig {
         self.setConfig(config: config)
     }
     
+    func setLogout() {
+        let config = AccountInfo(isLogin: false, token: nil, username: nil)
+        self.setConfig(config: config)
+    }
+    
     func isLogin() -> Bool {
         let info = getConfig()
         return info.isLogin
     }
+    
     func getInfo() -> AccountInfo {
         return getConfig()
     }

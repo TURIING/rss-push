@@ -18,6 +18,7 @@ struct client_coreApp: App {
                 #endif
                 .environmentObject(contentData)
                 .onAppear {
+                    
                     if !Account.instance.info.isLogin {
                         return
                     }
@@ -32,6 +33,18 @@ struct client_coreApp: App {
                             }
                         case .failure(let err):
                             self.contentData.rssError = RssError(error: err as! RssErrorType)
+                            return
+                        }
+                    }
+                    // Gets the messages
+                    print("refresh")
+                    Crate.refresh_message(){ result in
+                        switch result {
+                        case .success(let data):
+                            self.contentData.messages = data
+                        case .failure(let err):
+                            self.contentData.rssError = RssError(error: err as! RssErrorType)
+                            return
                         }
                     }
                 }

@@ -20,7 +20,6 @@ impl Jwt {
             Err(e) => Err(RssError::JwtInvalidError(e))
         }
     }
-
     // return username
     pub fn validate(token: String) -> Result<String, RssError> {
         match jsonwebtoken::decode::<Claims>(

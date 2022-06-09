@@ -1,7 +1,7 @@
 table! {
     crates (crate_id) {
         crate_id -> Text,
-        crate_type -> Text,
+        crate_type -> Integer,
         info -> Text,
     }
 }
@@ -12,7 +12,8 @@ table! {
         message_id -> Text,
         crate_id -> Text,
         receiver -> Text,
-        check_status -> Text,
+        check_status -> Bool,
+        notify_status -> Bool,
     }
 }
 
@@ -22,6 +23,8 @@ table! {
         message_id -> Text,
         send_time -> Text,
         content -> Text,
+        title -> Text,
+        description -> Text,
     }
 }
 
@@ -37,9 +40,9 @@ table! {
     task (id) {
         id -> Nullable<Integer>,
         crate_id -> Text,
-        task_type -> Text,
+        task_type -> Integer,
         username -> Text,
-        params -> Text,
+        params -> Nullable<Text>,
     }
 }
 

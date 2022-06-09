@@ -12,10 +12,10 @@ struct SubscribedView: View {
     let column: [GridItem] = [GridItem(.fixed(100))]
     
     var body: some View {
+        GeometryReader { geoProxy in
         
-        HStack {
-            GeometryReader { geoProxy in
-                VStack{
+            HStack(alignment: .center) {
+                VStack(alignment: .center){
                     if let data = self.contentData.subscribed {
                         Spacer()
                         ScrollView {
@@ -23,11 +23,27 @@ struct SubscribedView: View {
                                 LazyVGrid(columns: column, alignment: .leading, spacing: 8) {
                                     ForEach(data, id: \.self) { item in
                                         
-                                        SubscribedListItem(resCrateInfo: item, messageNum: 3)
+                                        SubscribedListItem(resCrateInfo: item, messageNum: 11)
                                             .id(item.crateId)
                                             .onTapGesture {
                                                 self.contentData.selectedSubscribedItem = item.crateId
                                                 self.contentData.selectedSubscribedItemPosition = item.crateId
+                                            }
+                                            .contextMenu{
+                                                Button(action:{
+                                                    Rss.unsubscribe(crate_id: item.crateId){ result in
+                                                        switch result {
+                                                        case .success(_):
+                                                            let index = self.contentData.subscribed?.firstIndex(of: item)
+                                                            self.contentData.subscribed?.remove(at: index!)
+                                                        case .failure(let err):
+                                                            self.contentData.rssError = RssError(error: err as! RssErrorType)
+                                                            return
+                                                        }
+                                                    }
+                                                }) {
+                                                    Text("unsubscribe")
+                                                }
                                             }
                                     }
                                 }
@@ -38,8 +54,22 @@ struct SubscribedView: View {
                         }
                         .frame(height: geoProxy.size.height - 55)
                         
-                    } else {
-                        Text("no subscribed")
+                    }
+                }
+                .onAppear{
+                    // Gets the subscribed list.
+                    Crate.Subscribed(){ result in
+                        switch result {
+                        case .success(let suc):
+                            if let data = suc {
+                                self.contentData.subscribed = data
+                            } else {
+                                self.contentData.subscribed = nil
+                            }
+                        case .failure(let err):
+                            self.contentData.rssError = RssError(error: err as! RssErrorType)
+                            return
+                        }
                     }
                 }
             }

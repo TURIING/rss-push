@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Avatar: View {
+    @EnvironmentObject var contentData: ContentViewModel
     var body: some View {
         Button(action: {}) {
             Image(systemName: "person.crop.circle")
@@ -16,6 +17,19 @@ struct Avatar: View {
                 .foregroundColor(Color.theme.foreground)
         }
         .buttonStyle(PlainButtonStyle())
+        .contextMenu{
+            VStack {
+                Button(action:{
+                    Account.instance.logout()
+                    contentData.isShowAccountView.toggle()
+                    contentData.messages = nil
+                    contentData.subscribed = nil
+                    contentData.selectedMessageContent = nil
+                }) {
+                    Text("logout")
+                }
+            }
+        }
         
         
     }

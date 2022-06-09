@@ -1,7 +1,4 @@
 pub mod auth;
 pub mod rss;
+pub mod crates;
 
-#[get("/")]
-pub fn hello() -> &'static str {
-    "Hello, world!"
-}

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AccountView: View {
-    @Binding var isShowAccountView: Bool
+    @EnvironmentObject var contentData: ContentViewModel
     @State private var username: String = ""
     @State private var passwd: String = ""
     @State private var passwdAgain: String = ""
@@ -63,10 +63,19 @@ struct AccountView: View {
                 Account.instance.login(username: username, passwd: passwd) { result in
                     switch result {
                     case .success(_):
-                        isShowAccountView.toggle()
+                        contentData.isShowAccountView.toggle()
                         #if os(macOS)
                         NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
                         #endif
+                        Crate.refresh_message(){ result in
+                            switch result {
+                            case .success(let data):
+                                self.contentData.messages = data
+                            case .failure(let err):
+                                self.contentData.rssError = RssError(error: err as! RssErrorType)
+                                return
+                            }
+                        }
                     case .failure(let err):
                         switch err {
                         case RssErrorType.passwdMistake: self.alertText = "The entered password is incorrect"

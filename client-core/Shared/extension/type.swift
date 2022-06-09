@@ -14,6 +14,7 @@ struct ServerMsg: Codable {
     var token: String?
     var rssInfo: RssInfo?
     var cratesInfo: [ResCrateInfo]?
+    var messagesInfo: [ResMessagesInfo]?
     
 }
 // A type for searching rss.
@@ -33,4 +34,14 @@ struct CrateInfo: Codable, Equatable, Hashable {
 struct ResCrateInfo: Codable, Equatable, Hashable {
     var crateId: String
     var crateInfo: CrateInfo
+}
+
+struct ResMessagesInfo: Codable, Equatable, Hashable {
+    var title: String
+    var description: String
+    var content: String
+    var message_id: String
+    var crate_id: String
+    var check_status: Bool
+    var send_time: String
 }

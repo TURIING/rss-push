@@ -3,46 +3,41 @@ use diesel::{SqliteConnection, QueryDsl ,RunQueryDsl, prelude::*};
 use crate::error::RssError;
 //use crate::types::task::SubscribeQuery;
 use crate::types::schema::subscribe;
-use crate::types::database::SubscribeQuery;
 
-pub fn get_records_by_username(
-    con: &SqliteConnection,
-    username: String
-) -> Result<Option<Vec<String>>, RssError> {
+#[derive(Debug, Queryable, Insertable, AsChangeset, Default)]
+#[table_name = "subscribe"]
+pub struct Subscribe {
+    pub id: Option<i32>,
+    pub username: String,
+    pub crate_id: String
+}
+impl Subscribe {
+    pub fn insert(self ,con: &SqliteConnection) -> Result<(), RssError> {
     
-    let records = subscribe::table
-        .filter(subscribe::username.eq(username))
-        .select(subscribe::crate_id)
-        .load::<String>(con)?;
-    if records.len() != 0 {
-        Ok(Some(records))
-    } else {
-        Ok(None)
+        diesel::insert_into(subscribe::table).values(self).execute(con)?;
+        Ok(())
+
     }
-    
-}
 
-pub fn insert(
-    con: &SqliteConnection, 
-    username: String, 
-    crate_id: String
-) -> Result<(), RssError> {
+    pub fn delete(username: String, crate_id: String, con: &SqliteConnection) -> Result<(), RssError> {
+        diesel::delete(subscribe::table.filter(subscribe::crate_id.eq(crate_id).and(subscribe::username.eq(username)))).execute(con)?;
+        Ok(())
+    }
 
-    let info = SubscribeQuery { id: None, username, crate_id };
-    diesel::insert_into(subscribe::table).values(info).execute(con)?;
-    Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use diesel::prelude::*;
-    use crate::database::subscribe::get_records_by_id;
-    use crate::constant::DATABASEURL;
-
-    #[test]
-    fn get_records_by_id_work() {
-        let con = SqliteConnection::establish(DATABASEURL)
-            .expect("The database URL could not be found");
-        println!("{:?}", get_records_by_id(&con, String::from("turiing")));
+    pub fn get_records_by_username(
+        con: &SqliteConnection,
+        username: String
+    ) -> Result<Option<Vec<String>>, RssError> {
+        
+        let records = subscribe::table
+            .filter(subscribe::username.eq(username))
+            .select(subscribe::crate_id)
+            .load::<String>(con)?;
+        if records.len() != 0 {
+            Ok(Some(records))
+        } else {
+            Ok(None)
+        }
+        
     }
 }

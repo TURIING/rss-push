@@ -1,20 +1,13 @@
 use crate::{
-    types::{
-        ResMsg,
-        SuccessStatus,
-        auth::Token, database::CrateInfo, ResCrateInfo,
-    },
-    DbConn,
-    error::RssError,
-    database,
-    rss::RssInfo,
+    types::{ResMsg, SuccessStatus, auth::Token, CrateInfo},
+    DbConn, error::RssError, rss::RssInfo,
+    database::{ crates::Crates, task::Task, subscribe::Subscribe, message::Message}
 };
 use rocket::{
-    serde::json::{serde_json::json, Value, self},
+    serde::json::{serde_json::{self, json}, Value},
     http::RawStr,
 };
 use uuid::Uuid;
-
 
 // return rss info
 #[post("/info", format="application/x-www-form-urlencoded", data="<url>")]
@@ -23,7 +16,6 @@ pub async fn info(_token: Token, url: String) -> Result<Value, RssError> {
     let url: Vec<&str> = url_original.split('=').collect();
 
     let rss_info = RssInfo::new(url[1].to_string()).await?;
-
     
     Ok(json!(ResMsg{
         status: SuccessStatus::RSSINFO, 
@@ -45,71 +37,59 @@ pub async fn subscribe(token: Token, url: String, conn: DbConn) -> Result<Value,
     let username = token.0;
 
     let RssInfo{ url: _, title, description } = RssInfo::new(url.clone()).await?;
-    let crate_info = CrateInfo{ url, title, description };
+    let crate_info = serde_json::to_string(&CrateInfo{ url, title, description }).unwrap();
     
     conn.run(move |con| {
         // check exist.
-        database::crates::exist_or_insert(con, url_uuid.clone(), crate_info)?;
+        Crates { 
+            crate_id: url_uuid.clone(), 
+            crate_type: 0, 
+            info: crate_info
+        }.exist_or_insert(&con)?;
 
         // Join the task queue.
-        database::task::insert(con, url_uuid.clone(), username.clone())?;
+        Task {
+            crate_id: String::from(url_uuid.clone()),
+            username: username.clone(),
+            ..Default::default()
+        }.insert(con)?;
 
-        database::subscribe::insert(con, username, url_uuid)?;
+        Subscribe { username, crate_id: url_uuid, ..Default::default() }.insert(con)?;
 
-        Ok(json!(ResMsg{ status: SuccessStatus::SUBSCRIBE, msg: String::from("success"), ..Default::default()}))
+        Ok(json!(
+            ResMsg{ 
+                status: SuccessStatus::SUBSCRIBE, 
+                msg: String::from("success"), 
+                ..Default::default()
+            }
+        ))
 
     }).await
 }
 
-// Returns all subscriptions for the specified user
-#[get("/subscribed")]
-pub async fn subscribed(token: Token, conn: DbConn) -> Result<Value, RssError> {
-    
+
+// subscribe rss feed
+#[post("/unsubscribe", format="application/x-www-form-urlencoded", data="<crate_id>")]
+pub async fn unsubscribe(token: Token, crate_id: String, conn: DbConn) -> Result<Value, RssError> {
+
     let username = token.0;
-    conn.run(|con| {
-        if let Some(records) = database::subscribe::get_records_by_username(con, username)? {
-            let mut res_crates_info: Vec<ResCrateInfo> = Vec::new();
-            for crate_id in records {
-                let crate_info = database::crates::get_info_by_id(con, crate_id.clone())?;
-                let crate_info: CrateInfo = json::from_str(&crate_info).unwrap();
-                let res_crate_info: ResCrateInfo = ResCrateInfo { crate_id, crate_info};
-                res_crates_info.push(res_crate_info);
+
+    let original = RawStr::new(&crate_id).url_decode().unwrap();
+    let crate_id: Vec<&str> = original.split('=').collect();
+    let crate_id = crate_id[1].to_string();
+
+    conn.run(move |con| {
+        Subscribe::delete(username.clone(), crate_id.clone(), &con)?;
+        Task::delete(username.clone(), crate_id.clone(), &con)?;
+        Message::delete(username, crate_id, con)?;
+
+        Ok(json!(
+            ResMsg {
+                status: SuccessStatus::UNSUBSCRIBE,
+                msg: String::from("success"),
+                ..Default::default()
             }
-            Ok(json!(
-                ResMsg{ status: SuccessStatus::SUBSCRIBED_SOME, crates_info: res_crates_info, ..Default::default()}
-            ))
-        } else {
-            Ok(json!(ResMsg{ status: SuccessStatus::SUBSCRIBED_NONE, ..Default::default()}))
-        }
+        ))
     }).await
 
-}
-
-
-#[cfg(test)]
-mod tests {
-    use uuid::Uuid;
-    use rss::Channel;
-    use rocket::tokio;
-    #[test]
-    fn it_works() {
-        println!("{:?}", Uuid::new_v3(&Uuid::NAMESPACE_URL, "http://baidu.com".as_bytes()));
-        println!("{:?}", Uuid::new_v3(&Uuid::NAMESPACE_URL, "http://baidu.com".as_bytes()));
-    }
-    #[rocket::tokio::test]
-    async fn rss() {
-        let url = "http://feed.williamlong.info/";
-        let content = reqwest::get(url)
-            .await
-            .unwrap()
-            .bytes()
-            .await
-            .unwrap();
-        let channel = Channel::read_from(&content[..]).unwrap();
-        for i in channel.items.iter() {
-            if let Some(title) = &i.title {
-                println!("{}", title);
-            }
-        }
-    }
 }
